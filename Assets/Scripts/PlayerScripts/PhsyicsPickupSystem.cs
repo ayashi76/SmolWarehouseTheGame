@@ -37,6 +37,14 @@ public class PhsyicsPickupSystem : MonoBehaviour
                 CurrentObject.useGravity = false;
             }
         }
+        if (CurrentObject && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            CurrentObject.useGravity = true;
+            CurrentObject.constraints = RigidbodyConstraints.None;
+            CurrentObject = null;
+
+            return;
+        }
     }
 
     void FixedUpdate()
