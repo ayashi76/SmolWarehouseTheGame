@@ -223,10 +223,17 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force); //This lets our player move on a slope.
 
             //This ensures that when our player is going up a slope, at moments when gravity is disabled this keeps the player on the slope.
-            if(rb.velocity.y > 0)
+            if (rb.velocity.y > 0)
             {
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
             }
+
+            if (rb.velocity.y < 0) //This code stops jittering moving down slopes.
+            {
+                rb.AddForce(Vector3.down * 40f, ForceMode.Force);
+            }
+
+            rb.drag = groundDrag * 2f;
         }
 
         //Runs if the player is on the ground.
@@ -246,13 +253,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void SpeedControl()
     {
-        //Limiting our speed on slopes.
-        if (OnSlope())
+        ////Limiting our speed on slopes.
+        if (OnSlope() && !exitingSlope)
         {
+            var opositeForce = -rb.velocity;
+            var slopeDownForce = opositeForce.normalized * 20f;
             if(rb.velocity.magnitude > moveSpeed)
             {
                 rb.velocity = rb.velocity.normalized * moveSpeed;
             }
+
+
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, moveSpeed / 2);
 
         }
         else
